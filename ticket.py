@@ -19,3 +19,15 @@ class Ticket:
                 (f'ent:{self.visitor.name}', 'ent:ticket', f'ent:{self.visitor.name}sTicket'),
                 (f'ent:{self.visitor.name}Visitor', 'ent:type1', f'"{self.visitor.type}"^^xsd:string'),
                 (f'ent:{self.visitor.name}sTicket', 'ent:type2', f'"{self.visitor.type}"^^xsd:string')]
+
+
+
+
+
+
+#[(dmap:Family_ticket, rdf:type, owl:Class), (dmap:Family_ticket, rdfs:label, Family_ticket), (dmap:Family_ticket, dmap:Name, $(Name)^^xsd:string), (dmap:Family_ticket, dmap:Number, $(Name)^^xsd:integer), (dmap:Family_ticket, dmap:Price, $(Name)^^xsd:integer)]
+#
+#
+#
+#
+#

@@ -1,0 +1,5 @@
+[CONFIGURATION]
+output_file: knowledge-graph.nt
+
+[GTFS-Madrid-Bench]
+mappings: data/mapping.rml.ttl

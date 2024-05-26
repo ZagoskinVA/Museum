@@ -29,41 +29,41 @@ from queryService import QueryService
 #generator.generate()
 
 queryService = QueryService()
-example = QueryExample()
+#example = QueryExample()
 
 #query = example.getFirstExample()
 
 #result = queryService.query(query)
 
 #print(result)
-from queryExample import QueryExample
-from SPARQLWrapper import SPARQLWrapper, CSV, POST
-federated_query = """
-PREFIX dmap: <http://www.menthor.net/myontology#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX dbo: <http://dbpedia.org/ontology/>
-PREFIX dbpedia-res: <http://dbpedia.org/resource/>
-INSERT {
-GRAPH <urn:graph:evtodienko> {
-dmap:Family_ticket rdfs:label ?abstract .
-}
-}
-WHERE {
-SERVICE <http://dbpedia.org/sparql> {
-dbpedia-res:Family dbo:abstract ?abstract .
-FILTER (LANG(?abstract) = "en")
-}
-}
-"""
-sparql = SPARQLWrapper('http://localhost:8890/sparql-auth')
-sparql.setHTTPAuth('DIGEST')
-sparql.setCredentials("dba","root")
-sparql.setMethod(POST)
-sparql.setQuery(federated_query)
-result = sparql.query()
-print(result)
+#from queryExample import QueryExample
+#from SPARQLWrapper import SPARQLWrapper, CSV, POST
+#federated_query = """
+#PREFIX dmap: <http://www.menthor.net/myontology#>
+#PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+#PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+#PREFIX owl: <http://www.w3.org/2002/07/owl#>
+#PREFIX dbo: <http://dbpedia.org/ontology/>
+#PREFIX dbpedia-res: <http://dbpedia.org/resource/>
+#INSERT {
+#GRAPH <urn:graph:evtodienko> {
+#dmap:Family_ticket rdfs:label ?abstract .
+#}
+#}
+#WHERE {
+#SERVICE <http://dbpedia.org/sparql> {
+#dbpedia-res:Family dbo:abstract ?abstract .
+#FILTER (LANG(?abstract) = "en")
+#}
+#}
+#"""
+#sparql = SPARQLWrapper('http://localhost:8890/sparql-auth')
+#sparql.setHTTPAuth('DIGEST')
+#sparql.setCredentials("dba","root")
+#sparql.setMethod(POST)
+#sparql.setQuery(federated_query)
+#result = sparql.query()
+#print(result)
 #result = queryService.query("""
 #SELECT ?subject ?predicate ?object
 #FROM <urn:graph:zagoskin>
@@ -84,3 +84,30 @@ print(result)
 #objects = dbpedia_wrapper.get_objects(subjects=dbpedia_uris, predicates=[namespace.RDF_TYPE])
 
 #print(objects)
+
+import morph_kgc
+from SPARQLWrapper import SPARQLWrapper, CSV, POST
+config_file = "data/config"
+
+g = morph_kgc.materialize(config_file)
+
+   # Сохранение RDF графа в файл
+print(g)
+s = g.serialize(format='nt')
+
+print(s)
+
+
+sparql = SPARQLWrapper('http://localhost:8890/sparql-auth')
+sparql.setHTTPAuth('DIGEST')
+sparql.setCredentials("dba","root")
+
+query = 'INSERT DATA { GRAPH <urn:graph:zagoskin> { '
+
+query = query + s + ' } }'
+
+print(query)
+
+sparql.setQuery(query)
+sparql.setMethod(POST)
+sparql.query()
